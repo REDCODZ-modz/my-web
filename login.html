@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Akun</title>
+    <style>
+        body {
+            background-color: #111;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: #222;
+            padding: 25px 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.6);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            color: #ffcc00;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #ccc;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #333;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="password"]:focus {
+            outline: none;
+            border-color: #ffcc00;
+            box-shadow: 0 0 8px rgba(255, 204, 0, 0.6);
+        }
+
+        .submit-button {
+            background-color: #ffcc00;
+            color: #111;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            width: 100%;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .submit-button:hover {
+            background-color: #e6b800;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+
+        .register-link a {
+            color: #ffcc00;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        #messageBox {
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+        #messageBox.success {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #messageBox.error {
+            background-color: #f44336;
+            color: white;
+        }
+        ::placeholder {
+          color: #888;
+          opacity: 1;
+        }
+        :-ms-input-placeholder {
+          color: #888;
+        }
+        ::-ms-input-placeholder {
+          color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Login Akun</h2>
+
+        <div id="messageBox"></div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="loginUsername">Username:</label>
+                <input type="text" id="loginUsername" name="loginUsername" placeholder="Masukkan username Anda" required>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password:</label>
+                <input type="password" id="loginPassword" name="loginPassword" placeholder="Masukkan password Anda" required>
+            </div>
+            <button type="submit" class="submit-button">Login</button>
+        </form>
+        <div class="register-link">
+            Belum punya akun? <a href="regis.html">Daftar di sini</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const messageBox = document.getElementById('messageBox');
+
+            loginForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                messageBox.style.display = 'none';
+
+                const usernameInput = document.getElementById('loginUsername');
+                const passwordInput = document.getElementById('loginPassword');
+
+                const enteredUsername = usernameInput.value.trim().toLowerCase(); 
+                const enteredPassword = passwordInput.value;
+
+                if (!enteredUsername || !enteredPassword) {
+                    showMessage('Username dan password wajib diisi!', 'error');
+                    return;
+                }
+
+                try {
+                    const userDataString = localStorage.getItem('userData_' + enteredUsername);
+                    
+                    if (userDataString) {
+                        const userData = JSON.parse(userDataString);
+                        
+                        if (userData.password === enteredPassword) {
+                            localStorage.setItem('loggedInUser', enteredUsername); 
+                            console.log('Login berhasil untuk:', enteredUsername);
+                            
+                            // Cek apakah halaman ini ada di dalam iframe
+                            if (window.self !== window.top) {
+                                console.log('Login.html: Berada di dalam iframe, mengirim pesan ke parent.'); // DEBUG
+                                window.parent.postMessage({ type: 'loginSuccess', redirectUrl: 'duplikat.html' }, '*');
+                            } else {
+                                console.log('Login.html: Tidak di iframe, redirect langsung.'); // DEBUG
+                                window.location.href = 'duplikat.html';
+                            }
+                        } else {
+                            showMessage('Username atau password salah. Silakan coba lagi.', 'error');
+                        }
+                    } else {
+                        showMessage(`Username '${enteredUsername}' tidak terdaftar. Silakan daftar terlebih dahulu.`, 'error');
+                    }
+                } catch (e) {
+                    console.error('Gagal mengakses localStorage atau kesalahan lain:', e);
+                    showMessage('Terjadi kesalahan saat login. Silakan coba lagi nanti.', 'error');
+                }
+            });
+
+            function showMessage(message, type) {
+                messageBox.textContent = message;
+                messageBox.className = '';
+                messageBox.classList.add(type);
+                messageBox.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
+

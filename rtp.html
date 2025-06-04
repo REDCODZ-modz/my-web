@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RTP Live Slot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ffcc00;
+            --dark-bg: #0c0c0c;
+            --medium-bg: #1a1a1a;
+            --light-bg: #222;
+            --card-bg: #2a2a2a;
+            --text-color: #fff;
+            --text-muted-color: #ccc;
+            --rtp-high: #28a745; /* Hijau untuk RTP tinggi */
+            --rtp-medium: #ffc107; /* Kuning untuk RTP sedang */
+            --rtp-low: #dc3545;   /* Merah untuk RTP rendah */
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 960px; /* Disesuaikan agar 4 kartu pas dengan nyaman */
+            margin: 0 auto;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--light-bg);
+        }
+
+        .page-header h2 {
+            color: var(--primary-color);
+            font-size: 1.8em; /* Sedikit lebih kecil agar muat di mobile */
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        .page-header h2 i {
+            margin-right: 10px;
+            font-size: 0.9em;
+        }
+        .page-header .back-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            white-space: nowrap; /* Mencegah teks wrap */
+        }
+        .page-header .back-link i {
+            margin-right: 5px;
+        }
+        .page-header .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .filter-controls {
+            margin-bottom: 25px;
+            display: flex;
+            gap: 10px; /* Kurangi gap */
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filter-controls input[type="text"],
+        .filter-controls select {
+            padding: 8px 10px; /* Kurangi padding */
+            background-color: var(--light-bg);
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: var(--text-color);
+            font-size: 0.9em; /* Kurangi font size */
+        }
+        .filter-controls input[type="text"] {
+            flex-grow: 1;
+            min-width: 150px; /* Kurangi min-width */
+        }
+        .filter-controls select {
+            min-width: 120px; /* Kurangi min-width */
+        }
+        .filter-controls input[type="text"]:focus,
+        .filter-controls select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .rtp-grid {
+            display: grid;
+            /* PERUBAHAN: Membuat 4 kolom */
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 15px; /* Kurangi gap antar kartu */
+        }
+
+        .rtp-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2); /* Bayangan lebih halus */
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .rtp-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+
+        .rtp-card .game-image-container {
+            width: 100%;
+            /* Tinggi gambar disesuaikan dengan rasio aspek, misal 4:3 atau 1:1 */
+            aspect-ratio: 4 / 3; 
+            overflow: hidden;
+            background-color: #333; /* Warna latar jika gambar tidak penuh */
+        }
+        .rtp-card .game-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Atau 'contain' jika ingin seluruh gambar terlihat */
+        }
+
+        .rtp-card .game-info {
+            padding: 10px; /* Kurangi padding */
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .rtp-card .game-name {
+            color: var(--text-color);
+            font-size: 0.9em; /* Kurangi ukuran font nama game */
+            font-weight: bold;
+            margin: 0 0 8px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .rtp-bar-container {
+            width: 90%;
+            height: 18px; /* Kurangi tinggi bar RTP */
+            background-color: #444;
+            border-radius: 10px;
+            margin: 0 auto 10px auto;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #555;
+        }
+        .rtp-bar-fill {
+            height: 100%;
+            border-radius: 10px 0 0 10px;
+            transition: width 0.5s ease-out, background-color 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        .rtp-bar-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            line-height: 18px; /* Sesuaikan dengan tinggi bar */
+            font-size: 0.75em; /* Kurangi ukuran font teks RTP */
+            font-weight: bold;
+            color: #111;
+            text-shadow: 0 0 2px rgba(255,255,255,0.3);
+        }
+
+        .rtp-card .play-button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: var(--dark-bg);
+            padding: 6px 15px; /* Kurangi padding tombol */
+            border-radius: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.8em; /* Kurangi ukuran font tombol */
+            margin-top: 10px;
+            transition: background-color 0.2s;
+            text-transform: uppercase;
+        }
+        .rtp-card .play-button:hover {
+            background-color: #e6b800;
+        }
+        
+        ::placeholder { color: #888; opacity: 1; }
+        :-ms-input-placeholder { color: #888; }
+        ::-ms-input-placeholder { color: #888; }
+
+        /* Responsiveness untuk layar sangat kecil agar tidak terlalu sempit */
+        @media (max-width: 480px) {
+            .rtp-grid {
+                grid-template-columns: repeat(2, 1fr); /* Jadi 2 kolom di layar sangat kecil */
+                gap: 10px;
+            }
+            .container {
+                padding: 10px;
+            }
+            .page-header h2 {
+                font-size: 1.5em;
+            }
+            .filter-controls {
+                gap: 8px;
+            }
+            .filter-controls input[type="text"],
+            .filter-controls select {
+                font-size: 0.85em;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h2><i class="fas fa-percent"></i> RTP Live Slot</h2>
+            <a href="duplikat.html" class="back-link"><i class="fas fa-arrow-left"></i> Kembali</a>
+        </div>
+
+        <div class="filter-controls">
+            <input type="text" id="searchGameInput" placeholder="Cari nama game...">
+            <select id="providerFilter">
+                <option value="">Semua Provider</option>
+            </select>
+            <select id="sortRtpFilter">
+                <option value="">Urutkan RTP</option>
+                <option value="high-to-low">Tertinggi ke Terendah</option>
+                <option value="low-to-high">Terendah ke Tertinggi</option>
+            </select>
+        </div>
+
+        <div class="rtp-grid" id="rtpGrid">
+            <!-- Kartu RTP Game akan ditambahkan oleh JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const gameRtpData = [
+            // 12 game yang sudah ada
+            { name: "Gates of Olympus", provider: "Pragmatic Play", rtp: 96.50, image: "img/olim.jpeg", link: "#" },
+            { name: "Starlight Princess", provider: "Pragmatic Play", rtp: 95.51, image: "img/inces.jpeg", link: "#" },
+            { name: "Sweet Bonanza", provider: "Pragmatic Play", rtp: 96.48, image: "img/bonanza.jpeg", link: "#" },
+            { name: "Mahjong Ways 2", provider: "PG Soft", rtp: 96.95, image: "https://placehold.co/180x135/FF69B4/FFFFFF?text=MahjongW2&font=raleway", link: "#" },
+            { name: "Koi Gate", provider: "Habanero", rtp: 98.00, image: "https://placehold.co/180x135/FF4500/FFFFFF?text=KoiGate&font=roboto", link: "#" },
+            { name: "Aztec Gems", provider: "Pragmatic Play", rtp: 96.52, image: "img/az.jpeg", link: "#" },
+            { name: "Joker Jewels", provider: "Pragmatic Play", rtp: 96.50, image: "img/jk.jpeg", link: "#" },
+            { name: "Lucky Neko", provider: "PG Soft", rtp: 96.73, image: "https://placehold.co/180x135/FF69B4/FFFFFF?text=LuckyNeko&font=raleway", link: "#" },
+            { name: "Hot Hot Fruit", provider: "Habanero", rtp: 96.74, image: "https://placehold.co/180x135/FF4500/FFFFFF?text=HotHotFruit&font=roboto", link: "#" },
+            { name: "Wild West Gold", provider: "Pragmatic Play", rtp: 96.51, image: "https://placehold.co/180x135/333333/FFD700?text=WWG&font=montserrat", link: "#" },
+            { name: "The Dog House Megaways", provider: "Pragmatic Play", rtp: 96.55, image: "https://placehold.co/180x135/333333/FFD700?text=DogHouseMW&font=montserrat", link: "#" },
+            { name: "Ganesha Fortune", provider: "PG Soft", rtp: 96.72, image: "https://placehold.co/180x135/FF69B4/FFFFFF?text=GaneshaF&font=raleway", link: "#" },
+            // Tambah 4 game lagi untuk total 16 (4x4 grid)
+            { name: "Pyramid Bonanza", provider: "Pragmatic Play", rtp: 95.45, image: "img/pb.jpeg", link: "#" },
+            { name: "5 Lions Megaways", provider: "Pragmatic Play", rtp: 96.50, image: "https://placehold.co/180x135/333333/FFD700?text=5LionsMW&font=montserrat", link: "#" },
+            { name: "Treasures of Aztec", provider: "PG Soft", rtp: 96.71, image: "https://placehold.co/180x135/FF69B4/FFFFFF?text=AztecTreasures&font=raleway", link: "#" },
+            { name: "Fa Cai Shen Deluxe", provider: "Habanero", rtp: 96.62, image: "https://placehold.co/180x135/FF4500/FFFFFF?text=FaCaiShen&font=roboto", link: "#" }
+        ];
+
+        const rtpGrid = document.getElementById('rtpGrid');
+        const searchInput = document.getElementById('searchGameInput');
+        const providerFilterSelect = document.getElementById('providerFilter');
+        const sortRtpFilterSelect = document.getElementById('sortRtpFilter');
+
+        function getRtpColor(rtp) {
+            if (rtp >= 97) return 'var(--rtp-high)';
+            if (rtp >= 96) return 'var(--rtp-medium)';
+            if (rtp >= 95) return 'orange';
+            return 'var(--rtp-low)';
+        }
+
+        function populateProviderFilter() {
+            const providers = [...new Set(gameRtpData.map(game => game.provider))].sort();
+            providers.forEach(provider => {
+                const option = document.createElement('option');
+                option.value = provider;
+                option.textContent = provider;
+                providerFilterSelect.appendChild(option);
+            });
+        }
+        
+        function displayGames(gamesToDisplay) {
+            rtpGrid.innerHTML = ''; 
+
+            if (gamesToDisplay.length === 0) {
+                rtpGrid.innerHTML = '<p style="color: var(--text-muted-color); grid-column: 1 / -1; text-align:center;">Game tidak ditemukan.</p>';
+                return;
+            }
+
+            gamesToDisplay.forEach(game => {
+                const card = document.createElement('div');
+                card.classList.add('rtp-card');
+                const rtpColor = getRtpColor(game.rtp);
+
+                card.innerHTML = `
+                    <div class="game-image-container">
+                        <img src="${game.image}" alt="[Gambar ${game.name}]" onerror="this.onerror=null;this.src='https://placehold.co/180x135/2a2a2a/888888?text=${encodeURIComponent(game.name.substring(0,10))}&font=arial';">
+                    </div>
+                    <div class="game-info">
+                        <h3 class="game-name" title="${game.name} (${game.provider})">${game.name}</h3>
+                        <div class="rtp-bar-container">
+                            <div class="rtp-bar-fill" style="width: ${game.rtp}%; background-color: ${rtpColor};"></div>
+                            <span class="rtp-bar-text">${game.rtp.toFixed(2)}%</span>
+                        </div>
+                        <a href="${game.link}" class="play-button">Mainkan</a>
+                    </div>
+                `;
+                rtpGrid.appendChild(card);
+            });
+        }
+
+        function filterAndSortGames() {
+            let filteredGames = [...gameRtpData];
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedProvider = providerFilterSelect.value;
+            const sortOrder = sortRtpFilterSelect.value;
+
+            if (searchTerm) {
+                filteredGames = filteredGames.filter(game => 
+                    game.name.toLowerCase().includes(searchTerm) || 
+                    game.provider.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            if (selectedProvider) {
+                filteredGames = filteredGames.filter(game => game.provider === selectedProvider);
+            }
+
+            if (sortOrder === 'high-to-low') {
+                filteredGames.sort((a, b) => b.rtp - a.rtp);
+            } else if (sortOrder === 'low-to-high') {
+                filteredGames.sort((a, b) => a.rtp - b.rtp);
+            }
+            displayGames(filteredGames);
+        }
+
+        searchInput.addEventListener('input', filterAndSortGames);
+        providerFilterSelect.addEventListener('change', filterAndSortGames);
+        sortRtpFilterSelect.addEventListener('change', filterAndSortGames);
+
+        populateProviderFilter();
+        displayGames(gameRtpData);
+    </script>
+</body>
+</html>
+

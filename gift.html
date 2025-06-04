@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misi Deposit & Hadiah</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ffcc00;
+            --dark-bg: #0c0c0c;
+            --medium-bg: #1a1a1a;
+            --light-bg: #222;
+            --card-bg: #2a2a2a;
+            --text-color: #fff;
+            --text-muted-color: #ccc;
+            --success-color: #28a745;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px; 
+            margin: 0 auto;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--light-bg);
+        }
+
+        .page-header h2 {
+            color: var(--primary-color);
+            font-size: 2em;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        .page-header h2 i {
+            margin-right: 10px;
+            font-size: 0.9em;
+        }
+        .page-header .back-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+        }
+        .page-header .back-link i {
+            margin-right: 5px;
+        }
+        .page-header .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .mission-intro {
+            text-align: center;
+            color: var(--text-muted-color);
+            font-size: 0.95em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .mission-intro strong {
+            color: var(--primary-color);
+        }
+
+        .mission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .mission-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            border-left: 5px solid var(--primary-color);
+        }
+        .mission-card.completed { 
+             border-left-color: var(--success-color);
+        }
+
+
+        .mission-card h3 {
+            color: var(--text-color);
+            font-size: 1.4em;
+            margin-top: 0;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+         .mission-card h3 i {
+            margin-right: 8px;
+            color: var(--primary-color);
+         }
+         .mission-card.completed h3 i {
+            color: var(--success-color);
+         }
+
+
+        .mission-card .deposit-amount {
+            font-size: 1.1em;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .mission-card .deposit-amount span {
+            font-size: 0.8em;
+            color: var(--text-muted-color);
+            font-weight: normal;
+        }
+
+        .mission-card .rewards-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+            flex-grow: 1; 
+        }
+        .mission-card .rewards-list li {
+            color: var(--text-muted-color);
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        .mission-card .rewards-list li i {
+            color: var(--primary-color);
+            margin-right: 10px;
+            width: 16px; 
+            text-align: center;
+        }
+        .mission-card .rewards-list li .reward-value {
+            color: var(--text-color);
+            font-weight: bold;
+        }
+        .mission-card .rewards-list li .saldo-bonus {
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
+
+        .mission-card .claim-button {
+            background-color: var(--primary-color);
+            color: #111;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            width: 100%;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-transform: uppercase;
+        }
+        .mission-card .claim-button:hover {
+            background-color: #e6b800;
+        }
+        .mission-card .claim-button:disabled {
+            background-color: #555;
+            color: #888;
+            cursor: not-allowed;
+        }
+        .mission-card .claim-button.claimed {
+            background-color: var(--success-color);
+            color: var(--text-color);
+            cursor: default;
+        }
+        .mission-card .claim-button.claimed:hover {
+            background-color: var(--success-color);
+        }
+
+        .progress-bar-mission {
+            background-color: #444;
+            border-radius: 5px;
+            height: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        .progress-bar-mission-inner {
+            background-color: var(--primary-color);
+            height: 100%;
+            width: 0%; 
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        .mission-card.completed .progress-bar-mission-inner {
+            width: 100% !important;
+            background-color: var(--success-color);
+        }
+        .progress-text {
+            font-size: 0.8em;
+            color: var(--text-muted-color);
+            text-align: right;
+            margin-bottom: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h2><i class="fas fa-gift"></i> Misi Deposit Spesial</h2>
+            <a href="duplikat.html" class="back-link"><i class="fas fa-arrow-left"></i> Kembali</a>
+        </div>
+
+        <div class="mission-intro">
+            <p>Selesaikan misi deposit untuk mendapatkan hadiah menarik berupa <strong>pengurangan Turnover (TO)</strong> dan <strong>bonus saldo</strong>! Semakin besar deposit Anda, semakin besar hadiahnya.</p>
+        </div>
+
+        <div class="mission-grid" id="missionGrid">
+            <!-- Misi akan ditambahkan oleh JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const missionData = [
+            {
+                id: 1,
+                title: "Misi Pemula",
+                icon: "fa-rocket",
+                depositRequired: 100000,
+                toReduction: 15, // Nilai tetap, display diubah ke X
+                saldoBonus: 0,
+                isCompleted: false 
+            },
+            {
+                id: 2,
+                title: "Misi Lanjutan",
+                icon: "fa-star",
+                depositRequired: 200000,
+                toReduction: 30,
+                saldoBonus: 0,
+                isCompleted: false
+            },
+            {
+                id: 3,
+                title: "Misi Pro",
+                icon: "fa-trophy",
+                depositRequired: 300000,
+                toReduction: 45,
+                saldoBonus: 0,
+                isCompleted: false
+            },
+            {
+                id: 4,
+                title: "Misi Master",
+                icon: "fa-crown",
+                depositRequired: 400000,
+                toReduction: 60,
+                saldoBonus: 0,
+                isCompleted: false
+            },
+            {
+                id: 5,
+                title: "Misi Sultan",
+                icon: "fa-gem",
+                depositRequired: 500000,
+                toReduction: 75,
+                saldoBonus: 150000,
+                isCompleted: false
+            }
+        ];
+
+        function formatIDR(number) {
+            if (isNaN(number) || number === null || typeof number === 'undefined') return "IDR 0";
+            return 'IDR ' + Number(number).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        }
+
+        function displayMissions() {
+            const missionGrid = document.getElementById('missionGrid');
+            if (!missionGrid) return;
+            missionGrid.innerHTML = ''; 
+
+            const userTotalDeposit = parseFloat(localStorage.getItem('userTotalAccumulatedDeposit')) || 0; 
+
+            missionData.forEach(mission => {
+                const card = document.createElement('div');
+                card.classList.add('mission-card');
+                
+                const missionClaimedStatusKey = `mission_${mission.id}_claimed`;
+                const isClaimed = localStorage.getItem(missionClaimedStatusKey) === 'true';
+                
+                let progressPercent = (userTotalDeposit / mission.depositRequired) * 100;
+                progressPercent = Math.min(progressPercent, 100); 
+
+                if (isClaimed) {
+                    card.classList.add('completed');
+                    progressPercent = 100; 
+                }
+
+                // PERUBAHAN TAMPILAN TO REDUCTION
+                let rewardsHtml = `<li><i class="fas fa-shield-alt"></i> Pengurangan TO: <span class="reward-value">${mission.toReduction}X</span></li>`;
+                if (mission.saldoBonus > 0) {
+                    rewardsHtml += `<li><i class="fas fa-coins"></i> Bonus Saldo: <span class="saldo-bonus">${formatIDR(mission.saldoBonus)}</span></li>`;
+                }
+
+                card.innerHTML = `
+                    <h3><i class="fas ${mission.icon}"></i> ${mission.title}</h3>
+                    <div class="deposit-amount">${formatIDR(mission.depositRequired)} <span>Target Deposit</span></div>
+                    <div class="progress-text">${isClaimed ? 'Selesai' : progressPercent.toFixed(0) + '% Tercapai'}</div>
+                    <div class="progress-bar-mission">
+                        <div class="progress-bar-mission-inner" style="width: ${progressPercent}%;"></div>
+                    </div>
+                    <ul class="rewards-list">
+                        ${rewardsHtml}
+                    </ul>
+                    <button class="claim-button" id="claimBtn_${mission.id}" ${isClaimed || userTotalDeposit < mission.depositRequired ? 'disabled' : ''}>
+                        ${isClaimed ? 'Sudah Diklaim' : 'Klaim Hadiah'}
+                    </button>
+                `;
+                missionGrid.appendChild(card);
+
+                const claimButton = document.getElementById(`claimBtn_${mission.id}`);
+                if (claimButton && !isClaimed && userTotalDeposit >= mission.depositRequired) {
+                    claimButton.addEventListener('click', function() {
+                        // PERUBAHAN PADA ALERT
+                        alert(`Hadiah untuk "${mission.title}" berhasil diklaim! (Pengurangan TO ${mission.toReduction}X${mission.saldoBonus > 0 ? ' & Saldo ' + formatIDR(mission.saldoBonus) : ''} telah diterapkan).`);
+                        
+                        localStorage.setItem(missionClaimedStatusKey, 'true');
+                        
+                        if (mission.saldoBonus > 0) {
+                            const loggedInUser = localStorage.getItem('loggedInUser');
+                            if (loggedInUser) {
+                                const userDataString = localStorage.getItem('userData_' + loggedInUser);
+                                if (userDataString) {
+                                    const userData = JSON.parse(userDataString);
+                                    userData.balance = (parseFloat(userData.balance) || 0) + mission.saldoBonus;
+                                    localStorage.setItem('userData_' + loggedInUser, JSON.stringify(userData));
+                                    console.log(`Bonus saldo ${formatIDR(mission.saldoBonus)} ditambahkan untuk ${loggedInUser}.`);
+                                    if (window.parent && window.parent !== window) {
+                                        window.parent.postMessage({ type: 'balanceUpdatedInBackground' }, '*');
+                                    }
+                                }
+                            }
+                        }
+                        displayMissions(); 
+                    });
+                } else if (isClaimed) {
+                    claimButton.classList.add('claimed');
+                }
+            });
+        }
+
+        displayMissions();
+
+        // Kontrol Demo (Hapus di Produksi)
+        const demoButtonContainer = document.createElement('div');
+        demoButtonContainer.style.textAlign = 'center';
+        demoButtonContainer.style.marginTop = '30px';
+        demoButtonContainer.style.padding = '10px';
+        demoButtonContainer.style.backgroundColor = '#333';
+        demoButtonContainer.style.borderRadius = '5px';
+
+        const demoInput = document.createElement('input');
+        demoInput.type = 'number';
+        demoInput.placeholder = 'Simulasi Total Deposit';
+        demoInput.style.padding = '8px';
+        demoInput.style.marginRight = '10px';
+        demoInput.style.borderRadius = '4px';
+        demoInput.style.border = '1px solid #555';
+
+        const demoButton = document.createElement('button');
+        demoButton.textContent = 'Update Total Deposit (Demo)';
+        demoButton.style.padding = '8px 15px';
+        demoButton.style.backgroundColor = '#5cb85c';
+        demoButton.style.color = 'white';
+        demoButton.style.border = 'none';
+        demoButton.style.borderRadius = '4px';
+        demoButton.style.cursor = 'pointer';
+
+        demoButton.onclick = function() {
+            const newTotalDeposit = parseFloat(demoInput.value);
+            if (!isNaN(newTotalDeposit) && newTotalDeposit >= 0) {
+                localStorage.setItem('userTotalAccumulatedDeposit', newTotalDeposit.toString());
+                displayMissions();
+                alert('Total deposit (simulasi) telah diupdate menjadi: ' + formatIDR(newTotalDeposit));
+            } else {
+                alert('Masukkan angka yang valid untuk total deposit.');
+            }
+        };
+        demoButtonContainer.appendChild(document.createTextNode("Kontrol Demo (Hapus di Produksi): "));
+        demoButtonContainer.appendChild(demoInput);
+        demoButtonContainer.appendChild(demoButton);
+        document.querySelector('.container').appendChild(demoButtonContainer);
+    </script>
+</body>
+</html>
+

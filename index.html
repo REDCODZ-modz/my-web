@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GRIZLY SLOTTER - Situs Terpercaya</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #ffcc00; /* Warna kuning utama */
+      --dark-bg: #0c0c0c;
+      --medium-bg: #1a1a1a;
+      --light-bg: #222;
+      --card-bg: #2a2a2a; /* Digunakan untuk game card */
+      --text-color: #fff;
+      --text-muted-color: #ccc;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--dark-bg);
+      color: var(--text-color);
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      padding-bottom: 70px; /* Ruang untuk footer navigasi */
+    }
+
+    /* Header Utama */
+    .main-header {
+      background-color: var(--medium-bg);
+      padding: 0.75rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #333;
+      position: sticky; 
+      top: 0;
+      z-index: 1001;
+    }
+
+    .main-header .logo img {
+      height: 35px; 
+      width: auto;
+    }
+
+    .main-header .menu-toggle {
+      color: var(--text-muted-color);
+      font-size: 1.5em;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .main-header .menu-toggle:hover {
+      color: var(--primary-color);
+    }
+
+    /* Running Text/Marquee */
+    .running-text-bar {
+      background-color: #111;
+      color: var(--text-muted-color);
+      padding: 0.6rem 0.5rem;
+      font-size: 0.85em;
+      overflow: hidden;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+    }
+    .running-text-bar i {
+      color: var(--primary-color);
+      margin-right: 0.75rem;
+      font-size: 1.1em;
+    }
+    .running-text-bar marquee {
+      flex-grow: 1;
+    }
+
+    /* Main Banner Slider */
+    .main-banner-slider-container {
+        width: 100%;
+        max-width: 800px; /* Lebar banner bisa disesuaikan */
+        margin: 0 auto 1rem auto; /* Tengah dan margin bawah */
+        overflow: hidden;
+        position: relative;
+        border-radius: 8px; /* Opsional: sudut melengkung untuk banner */
+        aspect-ratio: 16 / 7; /* Jaga rasio aspek, sesuaikan jika perlu */
+    }
+    .main-banner-slider {
+        display: flex;
+        transition: transform 0.7s ease-in-out; /* Animasi slide lebih halus */
+        height: 100%;
+    }
+    .main-banner-slider .slide {
+        min-width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        position: relative; /* Untuk teks di atas gambar */
+    }
+    .main-banner-slider .slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    .main-banner-slider .slide .banner-content {
+        position: absolute;
+        bottom: 20px; /* Posisi teks dari bawah */
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0,0,0,0.6);
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        text-align: center;
+        max-width: 80%;
+    }
+    .main-banner-slider .slide h1 {
+      font-size: 1.5em; /* Ukuran font disesuaikan */
+      color: var(--primary-color);
+      margin: 0 0 0.3rem 0;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+    }
+    .main-banner-slider .slide p {
+      font-size: 0.9em; /* Ukuran font disesuaikan */
+      margin: 0 0 1rem 0;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+    }
+    .main-banner-slider .slide .cta-button {
+      background-color: var(--primary-color);
+      color: #111;
+      padding: 0.6rem 1.5rem; /* Padding tombol disesuaikan */
+      border: none;
+      border-radius: 20px;
+      font-size: 0.9em;
+      font-weight: bold;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: background-color 0.3s;
+      box-shadow: 0 3px 8px rgba(255,204,0,0.3);
+    }
+    .main-banner-slider .slide .cta-button:hover {
+      background-color: #e6b800;
+    }
+    .slider-dots {
+        position: absolute;
+        bottom: 10px; /* Titik di bawah banner content */
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 8px;
+        z-index: 10; /* Pastikan di atas gambar */
+    }
+    .slider-dots .dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        background-color: rgba(255,255,255,0.5);
+        border-radius: 50%;
+        margin: 0 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .slider-dots .dot.active {
+        background-color: var(--primary-color);
+    }
+
+
+    /* Auth Buttons (Daftar & Masuk) */
+    .auth-actions {
+      display: flex;
+      justify-content: space-around;
+      padding: 1rem;
+      background-color: var(--dark-bg);
+    }
+    .auth-actions .action-button {
+      flex-grow: 1;
+      margin: 0 0.5rem;
+      padding: 0.9rem 1rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1em;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      transition: opacity 0.3s;
+    }
+    .auth-actions .daftar-btn {
+      background-color: var(--primary-color);
+      color: #111;
+    }
+    .auth-actions .masuk-btn {
+      background-color: #444;
+      color: var(--text-color);
+    }
+    .auth-actions .action-button:hover {
+        opacity: 0.9;
+    }
+
+    /* Jackpot Display */
+    .jackpot-section {
+      padding: 1.5rem 1rem;
+      background-color: var(--dark-bg);
+      text-align: center;
+    }
+    .jackpot-section .jackpot-title-small {
+        font-size: 0.8em;
+        color: var(--text-muted-color);
+        margin-bottom: 0.2rem;
+    }
+    .jackpot-section .jackpot-title-main {
+        font-size: 1em;
+        color: var(--primary-color);
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+    }
+    .jackpot-display-container {
+      background: linear-gradient(to bottom, #2a2a2a, #111);
+      border: 2px solid var(--primary-color);
+      border-radius: 25px;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 400px;
+      margin: 0 auto;
+      box-shadow: 0 0 15px rgba(255,204,0,0.2);
+    }
+    .jackpot-display-container .menu-icon {
+        font-size: 1.8em;
+        color: var(--primary-color);
+    }
+    .jackpot-display-container .amount {
+      color: var(--primary-color);
+      font-size: 1.6em;
+      font-weight: bold;
+      letter-spacing: 1px;
+      flex-grow: 1;
+      text-align: center;
+    }
+
+    /* Game Categories Navigation */
+    .game-categories-nav {
+      background-color: var(--medium-bg);
+      padding: 0.75rem 0;
+      margin-top: 1rem;
+    }
+    .game-categories {
+      display: flex;
+      justify-content: space-around;
+      overflow-x: auto;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      padding: 0 0.5rem;
+    }
+    .game-categories::-webkit-scrollbar {
+        display: none;
+    }
+    .game-categories a {
+      color: var(--text-muted-color);
+      text-decoration: none;
+      padding: 0.6rem 1rem;
+      font-size: 0.85em;
+      text-align: center;
+      border-radius: 20px;
+      transition: background-color 0.2s, color 0.2s;
+      white-space: nowrap;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 70px;
+    }
+    .game-categories a i {
+      font-size: 1.4em;
+      margin-bottom: 0.3rem;
+    }
+    .game-categories a.active,
+    .game-categories a:hover {
+      background-color: var(--primary-color);
+      color: #111;
+      font-weight: bold;
+    }
+    .game-section-title {
+        text-align: center;
+        color: var(--primary-color);
+        font-size: 1.1em;
+        font-weight: bold;
+        padding: 1rem 0 0.5rem 0;
+        background-color: var(--dark-bg);
+    }
+
+    /* Game Grid */
+    .game-grid-container { /* Wrapper untuk grid dan judulnya */
+      padding: 1rem;
+      background-color: var(--dark-bg);
+    }
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 1rem;
+    }
+    .game-card { /* Styling untuk kartu game */
+      background: var(--card-bg);
+      border-radius: 8px;
+      overflow: hidden;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      padding-bottom: 0.5rem;
+      border: 1px solid #333;
+    }
+    .game-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    }
+    .game-card img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+    }
+    .game-card p {
+      margin: 0.5rem 0.2rem 0; /* Beri sedikit padding horizontal untuk teks */
+      font-size: 0.8em; /* Sedikit lebih kecil agar muat */
+      color: var(--text-muted-color);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: var(--medium-bg);
+      display: flex;
+      justify-content: space-around;
+      padding: 0.5rem 0;
+      border-top: 1px solid #333;
+      z-index: 1000;
+    }
+    .bottom-nav a {
+      color: var(--text-muted-color);
+      text-decoration: none;
+      text-align: center;
+      font-size: 0.75em;
+      padding: 0.2rem;
+      flex-grow: 1;
+    }
+    .bottom-nav a i {
+      display: block;
+      font-size: 1.5em;
+      margin-bottom: 0.2rem;
+    }
+    .bottom-nav a.active,
+    .bottom-nav a:hover {
+      color: var(--primary-color);
+    }
+
+    /* Popup Login */
+    .popup-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.8); display: none;
+      justify-content: center; align-items: center; z-index: 10001;
+    }
+    .popup-content {
+      background-color: var(--light-bg); padding: 25px; border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.5); position: relative;
+      width: 90%; max-width: 400px; height: auto; max-height: 90vh;
+      display: flex; flex-direction: column;
+    }
+    .popup-content iframe {
+      width: 100%; height: 450px;
+      border: none; border-radius: 5px;
+    }
+    .close-button {
+      position: absolute; top: 10px; right: 15px; font-size: 24px;
+      font-weight: bold; color: var(--primary-color); cursor: pointer;
+      background: none; border: none;
+    }
+
+    /* Notifikasi Acak */
+    .random-notifications-container {
+        position: fixed;
+        bottom: 70px;
+        left: 10px;
+        right: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        z-index: 999;
+        pointer-events: none;
+    }
+    .notification-item {
+        background-color: rgba(0, 0, 0, 0.85);
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 0.8em;
+        border-left: 4px solid var(--primary-color);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        opacity: 0;
+        transform: translateX(-30px);
+        animation: fadeInSlideEntry 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+                     fadeOutSlideExit 0.5s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards 4.5s;
+        pointer-events: auto;
+    }
+    .notification-item.withdraw {
+        border-left-color: #f44336;
+    }
+    .notification-item.deposit {
+        border-left-color: #4CAF50;
+    }
+    .notification-item strong {
+        color: var(--primary-color);
+        font-weight: bold;
+    }
+    .notification-item i {
+        margin-right: 5px;
+    }
+
+    @keyframes fadeInSlideEntry {
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    @keyframes fadeOutSlideExit {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+    }
+
+  </style>
+</head>
+<body>
+
+  <header class="main-header">
+    <div class="logo">
+        <img src="https://placehold.co/150x40/1a1a1a/FFCC00?text=GRIZLY SLOTTER&amp;font=raleway" alt="[Logo GRIZLY SLOTTER]">
+    </div>
+    <button class="menu-toggle"><i class="fas fa-bars"></i></button>
+  </header>
+
+  <div class="running-text-bar">
+    <i class="fas fa-volume-up"></i>
+    <marquee behavior="scroll" direction="left">
+      Waspada Penipuan Phising Yang Mengatasnamakan GRIZLY SLOTTER. Pemeliharaan terjadwal setiap hari Senin pukul 06:00 - 07:00 WIB.
+    </marquee>
+  </div>
+
+  <!-- Slider Banner Utama Baru -->
+  <section class="main-banner-slider-container">
+      <div class="main-banner-slider" id="mainBannerSlider">
+          <!-- Slide akan ditambahkan oleh JavaScript -->
+      </div>
+      <div class="slider-dots" id="mainBannerSliderDots">
+          <!-- Titik navigasi akan ditambahkan oleh JavaScript -->
+      </div>
+  </section>
+
+  <section class="auth-actions">
+    <a href="regis.html" class="action-button daftar-btn">Daftar</a>
+    <a href="#" class="action-button masuk-btn" id="loginButtonTrigger">Masuk</a>
+  </section>
+
+  <section class="jackpot-section">
+    <h3 class="jackpot-title-main">JACKPOT PLAY</h3>
+    <div class="jackpot-display-container">
+        <i class="fas fa-bars menu-icon"></i>
+        <div class="amount" id="jackpotDisplay">IDR 0</div>
+    </div>
+  </section>
+
+  <nav class="game-categories-nav">
+    <div class="game-categories">
+      <a href="#" class="active"><i class="fas fa-fire"></i> HOT GAMES</a>
+      <a href="slot.html"><i class="fas fa-dice-d20"></i> SLOTS</a>
+      <a href="casino.html"><i class="fas fa-landmark"></i> LIVE CASINO</a>
+      <a href="togel.html"><i class="fas fa-ticket-alt"></i> TOGEL</a>
+    </div>
+  </nav>
+  
+  <div class="game-grid-container"> <!-- Wrapper untuk judul dan grid game populer -->
+    <div class="game-section-title">GAME POPULER</div>
+    <div class="game-grid">
+        <!-- PERUBAHAN: Game 1 dengan gambar -->
+        <div class="game-card">
+            <img src="img/olim.jpeg" alt="[Gambar Gates of Olympus]" onerror="this.onerror=null;this.src='https://placehold.co/120x100/222222/FFFFFF?text=Game+1';">
+            <p>Gates of Olympus</p>
+        </div>
+        <div class="game-card">
+            <img src="img/inces.jpeg" alt="[Gambar Starlight Princess]" onerror="this.onerror=null;this.src='https://placehold.co/120x100/222222/FFFFFF?text=Game+2';">
+            <p>Starlight Princess</p>
+        </div>
+        <div class="game-card">
+            <img src="img/bonanza.jpeg" alt="[Gambar Sweet Bonanza]" onerror="this.onerror=null;this.src='https://placehold.co/120x100/222222/FFFFFF?text=Game+3';">
+            <p>Sweet Bonanza</p>
+        </div>
+         <div class="game-card">
+            <img src="img/az.jpeg" alt="[Gambar Aztec Gems]" onerror="this.onerror=null;this.src='https://placehold.co/120x100/222222/FFFFFF?text=Game+4';">
+            <p>Aztec Gems</p>
+        </div>
+         <div class="game-card">
+            <img src="img/jk.jpeg" alt="[Gambar Joker Jewels]" onerror="this.onerror=null;this.src='https://placehold.co/120x100/222222/FFFFFF?text=Game+5';">
+            <p>Joker Jewels</p>
+        </div>
+         <div class="game-card">
+            <img src="img/pb.jpeg" alt="[Gambar Pyramid Bonanza]" onerror="this.onerror=null;this.src='https://placehold.co/120x100/222222/FFFFFF?text=Game+6';">
+            <p>Pyramid Bonanza</p>
+        </div>
+    </div>
+  </div>
+
+
+  <div class="random-notifications-container" id="randomNotificationsContainer">
+  </div>
+
+  <nav class="bottom-nav">
+    <a href="#" class="active"><i class="fas fa-home"></i> Beranda</a>
+    <a href="#"><i class="fas fa-gift"></i> Promosi</a>
+    <a href="#" id="loginButtonTriggerBottom"><i class="fas fa-sign-in-alt"></i> Masuk</a>
+    <a href="#"><i class="fas fa-headset"></i> Hub. Kami</a>
+    <a href="#"><i class="fas fa-user-circle"></i> Akun Saya</a>
+  </nav>
+
+  <div id="loginPopupOverlay" class="popup-overlay">
+    <div class="popup-content">
+      <button class="close-button" id="closePopupButton">&times;</button>
+      <iframe id="loginFrame" src="" title="Formulir Login"></iframe>
+    </div>
+  </div>
+
+<script>
+  // Fungsi untuk format mata uang IDR
+  function formatIDR(number) {
+    if (isNaN(number) || number === null || typeof number === 'undefined') return "IDR 0";
+    return 'IDR ' + Number(number).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  }
+
+  // Jackpot Dinamis
+  const jackpotDisplayElement = document.getElementById('jackpotDisplay');
+  let currentJackpotAmount = 14074403736;
+
+  function updateDynamicJackpot() {
+    if (jackpotDisplayElement) {
+        currentJackpotAmount += Math.floor(Math.random() * 1200) + 300;
+        jackpotDisplayElement.textContent = formatIDR(currentJackpotAmount);
+    }
+  }
+
+  // Notifikasi Acak
+  const notificationsContainer = document.getElementById('randomNotificationsContainer');
+  const sampleUsernamesForNotifications = ["PlayerVIP", "SlotMaster", "BigWin", "Lucky7", "ProGamer", "JackpotKing", "GoldFinger"];
+  const maxNotificationsOnScreen = 1;
+
+  function createSingleRandomNotification() {
+      if (!notificationsContainer) return;
+      while (notificationsContainer.firstChild) {
+          notificationsContainer.removeChild(notificationsContainer.firstChild);
+      }
+      const type = Math.random() < 0.6 ? 'deposit' : 'withdraw';
+      const userIndex = Math.floor(Math.random() * sampleUsernamesForNotifications.length);
+      const baseUser = sampleUsernamesForNotifications[userIndex];
+      const randomSuffix = Math.floor(Math.random() * 900) + 100;
+      const displayUser = baseUser.substring(0, Math.min(baseUser.length, 5)) + '***' + randomSuffix;
+      let amount;
+      if (type === 'deposit') {
+          amount = (Math.floor(Math.random() * 10) + 1) * 25000;
+      } else {
+          amount = (Math.floor(Math.random() * 8) + 1) * 50000;
+      }
+      const notificationDiv = document.createElement('div');
+      notificationDiv.classList.add('notification-item', type);
+      let iconClass = type === 'deposit' ? 'fa-arrow-down' : 'fa-arrow-up';
+      let actionText = type === 'deposit' ? 'melakukan Deposit' : 'melakukan Withdraw';
+      notificationDiv.innerHTML = `
+          <i class="fas ${iconClass}"></i> 
+          <strong>${displayUser}</strong> baru saja ${actionText} sebesar <strong>${formatIDR(amount)}</strong>
+      `;
+      notificationsContainer.appendChild(notificationDiv);
+      setTimeout(() => {
+          if (notificationDiv.parentNode === notificationsContainer) {
+              notificationsContainer.removeChild(notificationDiv);
+          }
+      }, 5000);
+  }
+
+  // Logika untuk Popup Login
+  const loginButtonTrigger = document.getElementById('loginButtonTrigger');
+  const loginButtonTriggerBottom = document.getElementById('loginButtonTriggerBottom');
+  const loginPopupOverlay = document.getElementById('loginPopupOverlay');
+  const closePopupButton = document.getElementById('closePopupButton');
+  const loginFrame = document.getElementById('loginFrame');
+
+  function openLoginPopup() {
+    createSingleRandomNotification(); 
+    if (loginFrame && loginPopupOverlay) {
+        loginFrame.src = 'login.html';
+        loginPopupOverlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    } else {
+        console.error("Elemen popup login tidak ditemukan.");
+    }
+  }
+
+  function closeLoginPopup() {
+    if (loginPopupOverlay && loginFrame) {
+        loginPopupOverlay.style.display = 'none';
+        loginFrame.src = '';
+        document.body.style.overflow = 'auto';
+    }
+  }
+
+  if (loginButtonTrigger) {
+    loginButtonTrigger.addEventListener('click', function(event) {
+      event.preventDefault();
+      openLoginPopup();
+    });
+  }
+  if (loginButtonTriggerBottom) {
+    loginButtonTriggerBottom.addEventListener('click', function(event) {
+      event.preventDefault();
+      openLoginPopup();
+    });
+  }
+
+  if (closePopupButton) {
+    closePopupButton.addEventListener('click', closeLoginPopup);
+  }
+
+  if (loginPopupOverlay) {
+    loginPopupOverlay.addEventListener('click', function(event) {
+      if (event.target === loginPopupOverlay) {
+        closeLoginPopup();
+      }
+    });
+  }
+
+  // Listener untuk pesan dari iframe login
+  window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'loginSuccess' && event.data.redirectUrl) {
+      console.log('Index.html: Pesan loginSuccess diterima, menutup popup dan mengarahkan ke:', event.data.redirectUrl);
+      closeLoginPopup();
+      window.location.href = event.data.redirectUrl;
+    }
+  });
+
+  // Main Banner Slider Logic
+  const mainBannerSlider = document.getElementById('mainBannerSlider');
+  const mainBannerSliderDotsContainer = document.getElementById('mainBannerSliderDots');
+  const bannerImages = [
+      { src: "img/prom1.jpeg", title: "BONUS NEW MEMBER 50%", desc: "UNTUK SEMUA MEMBER BARU GAME SLOT", ctaLink: "regis.html", ctaText: "KLAIM" },
+      { src: "img/prom3.jpeg", title: "PROMO SPESIAL MINGGUAN", desc: "DAPATKAN CASHBACK HINGGA 10% SETIAP MINGGU!", ctaLink: "#", ctaText: "INFO DETAIL" },
+      { src: "img/prom2.jpeg", title: "JP BESAR", desc: "MENANGKAN RATUSAN JUTA RUPIAH SETIAP HARI!", ctaLink: "slot.html", ctaText: "MAIN" }
+      // Tambahkan objek gambar lain di sini jika perlu
+  ];
+  let currentBannerSlideIndex = 0;
+  let bannerSlideInterval;
+
+  function createMainBannerSlider() {
+      if (!mainBannerSlider || !mainBannerSliderDotsContainer) return;
+      mainBannerSlider.innerHTML = ''; 
+      mainBannerSliderDotsContainer.innerHTML = '';
+
+      bannerImages.forEach((banner, index) => {
+          const slideDiv = document.createElement('div');
+          slideDiv.classList.add('slide');
+          
+          const img = document.createElement('img');
+          img.src = banner.src;
+          img.alt = `[Gambar ${banner.title}]`;
+          img.onerror = function() { this.onerror=null; this.src='https://placehold.co/800x350/1a1a1a/333333?text=Error+Gambar'; };
+          slideDiv.appendChild(img);
+
+          // Tambahkan konten teks di atas gambar
+          const contentDiv = document.createElement('div');
+          contentDiv.classList.add('banner-content');
+          contentDiv.innerHTML = `
+              <h1>${banner.title}</h1>
+              <p>${banner.desc}</p>
+              <a href="${banner.ctaLink}" class="cta-button">${banner.ctaText}</a>
+          `;
+          slideDiv.appendChild(contentDiv);
+          mainBannerSlider.appendChild(slideDiv);
+
+          const dot = document.createElement('span');
+          dot.classList.add('dot');
+          dot.dataset.index = index;
+          if (index === 0) dot.classList.add('active');
+          dot.addEventListener('click', () => {
+              goToMainBannerSlide(index);
+              resetMainBannerSlideInterval();
+          });
+          mainBannerSliderDotsContainer.appendChild(dot);
+      });
+      startMainBannerSlideShow();
+  }
+
+  function goToMainBannerSlide(index) {
+      if (!mainBannerSlider) return;
+      mainBannerSlider.style.transform = `translateX(-${index * 100}%)`;
+      currentBannerSlideIndex = index;
+      updateMainBannerDots();
+  }
+
+  function updateMainBannerDots() {
+      const dots = mainBannerSliderDotsContainer.querySelectorAll('.dot');
+      dots.forEach(dot => dot.classList.remove('active'));
+      if (dots[currentBannerSlideIndex]) {
+          dots[currentBannerSlideIndex].classList.add('active');
+      }
+  }
+
+  function nextMainBannerSlide() {
+      let nextIndex = currentBannerSlideIndex + 1;
+      if (nextIndex >= bannerImages.length) {
+          nextIndex = 0;
+      }
+      goToMainBannerSlide(nextIndex);
+  }
+
+  function startMainBannerSlideShow() {
+      stopMainBannerSlideShow();
+      bannerSlideInterval = setInterval(nextMainBannerSlide, 5000); // Ganti slide setiap 5 detik
+  }
+
+  function stopMainBannerSlideShow() {
+      clearInterval(bannerSlideInterval);
+  }
+  
+  function resetMainBannerSlideInterval() {
+      stopMainBannerSlideShow();
+      startMainBannerSlideShow();
+  }
+
+
+  document.addEventListener('DOMContentLoaded', function() {
+      updateDynamicJackpot();
+      setInterval(updateDynamicJackpot, 3000);
+      createMainBannerSlider(); // Inisialisasi slider banner utama
+  });
+
+</script>
+</body>
+</html>
+

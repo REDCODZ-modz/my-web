@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir Penarikan Dana (Withdraw)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: #111;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: #222;
+            padding: 25px 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.6);
+            width: 100%;
+            max-width: 550px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #ffcc00;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        .current-balance-info {
+            background-color: #2a2a2a;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1em;
+            color: #ccc;
+        }
+        .current-balance-info strong {
+            color: #ffcc00;
+            font-size: 1.2em;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #ccc;
+            margin-bottom: 7px;
+            font-size: 0.9em;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="password"],
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            background-color: #333;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.95em;
+            box-sizing: border-box;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="number"]:focus,
+        .form-group input[type="password"]:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #ffcc00;
+            box-shadow: 0 0 8px rgba(255, 204, 0, 0.6);
+        }
+         .form-group select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23cccccc%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 12px;
+            padding-right: 30px;
+        }
+
+        .payment-details-display {
+            background-color: #2a2a2a;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #ddd;
+        }
+        .payment-details-display p {
+            margin: 5px 0;
+        }
+        .payment-details-display strong {
+            color: #ffcc00;
+        }
+        .no-details-message {
+            color: #ff8c00; /* Oranye untuk peringatan */
+            font-style: italic;
+        }
+        .no-details-message a {
+            color: #ffcc00;
+            text-decoration: underline;
+        }
+
+
+        .submit-button {
+            background-color: #ffcc00;
+            color: #111;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            width: 100%;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .submit-button:hover {
+            background-color: #e6b800;
+        }
+
+        #messageBox {
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+        #messageBox.success {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #messageBox.error {
+            background-color: #f44336;
+            color: white;
+        }
+        ::placeholder {
+          color: #888;
+          opacity: 1;
+        }
+        :-ms-input-placeholder {
+          color: #888;
+        }
+        ::-ms-input-placeholder {
+          color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2><i class="fas fa-arrow-up"></i> Formulir Penarikan Dana</h2>
+
+        <div class="current-balance-info">
+            Saldo Anda Saat Ini: <strong id="currentBalanceDisplay">Memuat...</strong>
+        </div>
+
+        <div id="messageBox"></div>
+
+        <form id="withdrawForm">
+            <div class="form-group">
+                <label for="withdrawMethod">Metode Penarikan:</label>
+                <select id="withdrawMethod" name="withdrawMethod">
+                    <option value="">-- Pilih Metode --</option>
+                    <option value="bank">Transfer Bank</option>
+                    <option value="ewallet">E-Wallet</option>
+                </select>
+            </div>
+
+            <div id="bankDetailsSection" class="form-group" style="display: none;">
+                <label>Detail Rekening Bank Tujuan:</label>
+                <div class="payment-details-display" id="bankDetailsDisplay">
+                    <p class="no-details-message">Detail bank tidak ditemukan. Harap <a href="regis.html">lengkapi profil Anda</a>.</p>
+                </div>
+            </div>
+
+            <div id="ewalletDetailsSection" class="form-group" style="display: none;">
+                <label>Detail E-Wallet Tujuan:</label>
+                <div class="payment-details-display" id="ewalletDetailsDisplay">
+                     <p class="no-details-message">Detail e-wallet tidak ditemukan. Harap <a href="regis.html">lengkapi profil Anda</a>.</p>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="withdrawAmount">Jumlah Penarikan (IDR):</label>
+                <input type="number" id="withdrawAmount" name="withdrawAmount" placeholder="Min. 50.000" min="50000" required>
+                <small style="color: #aaa; font-size: 0.8em;">Minimal penarikan: IDR 50.000</small>
+            </div>
+
+            <div class="form-group">
+                <label for="accountPassword">Password Akun (untuk verifikasi):</label>
+                <input type="password" id="accountPassword" name="accountPassword" placeholder="Masukkan password Anda" required>
+            </div>
+
+            <button type="submit" class="submit-button">Tarik Dana Sekarang</button>
+        </form>
+         <div style="text-align: center; margin-top: 20px;">
+            <a href="duplikat.html" style="color: #ffcc00; text-decoration: none; font-size:0.9em;">&laquo; Kembali ke Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        // Fungsi untuk format mata uang IDR
+        function formatIDR(number) {
+            if (isNaN(number) || number === null || typeof number === 'undefined') return "IDR 0";
+            return 'IDR ' + Number(number).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const withdrawForm = document.getElementById('withdrawForm');
+            const messageBox = document.getElementById('messageBox');
+            const currentBalanceDisplay = document.getElementById('currentBalanceDisplay');
+            const withdrawMethodSelect = document.getElementById('withdrawMethod');
+            const bankDetailsSection = document.getElementById('bankDetailsSection');
+            const bankDetailsDisplay = document.getElementById('bankDetailsDisplay');
+            const ewalletDetailsSection = document.getElementById('ewalletDetailsSection');
+            const ewalletDetailsDisplay = document.getElementById('ewalletDetailsDisplay');
+            const withdrawAmountInput = document.getElementById('withdrawAmount');
+            const accountPasswordInput = document.getElementById('accountPassword'); // Nanti bisa divalidasi dengan password asli
+
+            let currentBalance = 0;
+
+            // Muat dan tampilkan saldo saat ini
+            try {
+                currentBalance = parseFloat(localStorage.getItem('userBalance')) || 0;
+                currentBalanceDisplay.textContent = formatIDR(currentBalance);
+            } catch (e) {
+                console.error('Gagal memuat saldo:', e);
+                currentBalanceDisplay.textContent = formatIDR(0);
+            }
+
+            // Fungsi untuk menampilkan detail pembayaran
+            function loadPaymentDetails() {
+                const selectedMethod = withdrawMethodSelect.value;
+                bankDetailsSection.style.display = 'none';
+                ewalletDetailsSection.style.display = 'none';
+
+                if (selectedMethod === 'bank') {
+                    bankDetailsSection.style.display = 'block';
+                    const bankName = localStorage.getItem('userBankName');
+                    const accName = localStorage.getItem('userBankAccountName');
+                    const accNumber = localStorage.getItem('userBankAccountNumber');
+                    if (bankName && accName && accNumber) {
+                        bankDetailsDisplay.innerHTML = `
+                            <p>Nama Bank: <strong>${bankName}</strong></p>
+                            <p>Nama Pemilik: <strong>${accName}</strong></p>
+                            <p>Nomor Rekening: <strong>${accNumber}</strong></p>
+                        `;
+                    } else {
+                        bankDetailsDisplay.innerHTML = '<p class="no-details-message">Detail bank tidak ditemukan. Harap <a href="regis.html">lengkapi profil Anda</a>.</p>';
+                    }
+                } else if (selectedMethod === 'ewallet') {
+                    ewalletDetailsSection.style.display = 'block';
+                    const ewalletName = localStorage.getItem('userEwalletName');
+                    const ewalletNumber = localStorage.getItem('userEwalletNumber');
+                    if (ewalletName && ewalletNumber) {
+                        ewalletDetailsDisplay.innerHTML = `
+                            <p>Nama E-Wallet: <strong>${ewalletName}</strong></p>
+                            <p>Nomor Telepon: <strong>${ewalletNumber}</strong></p>
+                        `;
+                    } else {
+                        ewalletDetailsDisplay.innerHTML = '<p class="no-details-message">Detail e-wallet tidak ditemukan. Harap <a href="regis.html">lengkapi profil Anda</a>.</p>';
+                    }
+                }
+            }
+
+            withdrawMethodSelect.addEventListener('change', loadPaymentDetails);
+
+            withdrawForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                messageBox.style.display = 'none';
+
+                const method = withdrawMethodSelect.value;
+                const amount = parseFloat(withdrawAmountInput.value);
+                const password = accountPasswordInput.value; // Untuk simulasi, tidak divalidasi dengan password asli
+
+                if (!method) {
+                    showMessage('Harap pilih metode penarikan!', 'error');
+                    return;
+                }
+
+                // Cek apakah detail pembayaran ada untuk metode yang dipilih
+                if (method === 'bank' && !localStorage.getItem('userBankName')) {
+                    showMessage('Detail bank tujuan tidak ditemukan. Harap lengkapi profil Anda.', 'error');
+                    return;
+                }
+                if (method === 'ewallet' && !localStorage.getItem('userEwalletName')) {
+                    showMessage('Detail e-wallet tujuan tidak ditemukan. Harap lengkapi profil Anda.', 'error');
+                    return;
+                }
+
+
+                if (isNaN(amount) || amount <= 0) {
+                    showMessage('Jumlah penarikan tidak valid!', 'error');
+                    return;
+                }
+                if (amount < 50000) {
+                    showMessage('Jumlah penarikan minimal adalah IDR 50.000!', 'error');
+                    return;
+                }
+                if (amount > currentBalance) {
+                    showMessage('Saldo Anda tidak mencukupi untuk penarikan ini!', 'error');
+                    return;
+                }
+                if (!password) { // Validasi password sederhana
+                    showMessage('Harap masukkan password akun Anda untuk verifikasi!', 'error');
+                    return;
+                }
+                // Di aplikasi nyata, Anda akan memvalidasi password ini dengan server.
+
+                // Simulasi proses penarikan
+                try {
+                    currentBalance -= amount;
+                    localStorage.setItem('userBalance', currentBalance.toString());
+                    
+                    showMessage(`Penarikan sebesar ${formatIDR(amount)} berhasil diproses! Saldo baru Anda: ${formatIDR(currentBalance)}`, 'success');
+                    
+                    currentBalanceDisplay.textContent = formatIDR(currentBalance); // Update tampilan saldo
+                    withdrawForm.reset(); // Kosongkan form
+                    bankDetailsSection.style.display = 'none'; // Sembunyikan detail lagi
+                    ewalletDetailsSection.style.display = 'none';
+
+                } catch (e) {
+                    console.error('Gagal memproses penarikan:', e);
+                    showMessage('Terjadi kesalahan saat memproses penarikan.', 'error');
+                }
+            });
+
+            function showMessage(message, type) {
+                messageBox.textContent = message;
+                messageBox.className = '';
+                messageBox.classList.add(type);
+                messageBox.style.display = 'block';
+            }
+            
+            // Panggil sekali untuk inisialisasi jika ada metode yang sudah terpilih (misalnya dari state sebelumnya)
+            loadPaymentDetails(); 
+        });
+    </script>
+</body>
+</html>
+

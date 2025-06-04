@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir Deposit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ffcc00;
+            --dark-bg: #111;
+            --light-bg: #222;
+            --text-color: #fff;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: var(--light-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 600px;
+            position: relative; 
+        }
+
+        h2 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #ccc;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="file"],
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            background-color: #333;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: var(--text-color);
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        .form-group input[type="file"] {
+            padding: 8px; 
+        }
+        .form-group input[type="file"]::file-selector-button {
+            background-color: var(--primary-color);
+            color: #111;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="number"]:focus,
+        .form-group input[type="file"]:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
+        }
+
+        .payment-method-options {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .payment-method-options label {
+            display: flex;
+            align-items: center;
+            background-color: #333;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid #444;
+            transition: background-color 0.3s, border-color 0.3s;
+            flex-grow: 1;
+            justify-content: center;
+            position: relative;
+        }
+        .payment-method-options label.disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .maintenance-text {
+            font-size: 0.75em;
+            color: #ff8c00;
+            margin-left: 8px;
+            font-style: italic;
+        }
+
+        .payment-method-options input[type="radio"] {
+            display: none;
+        }
+
+        .payment-method-options input[type="radio"]:checked + span {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        .payment-method-options label:has(input[type="radio"]:checked) {
+            background-color: #444;
+            border-color: var(--primary-color);
+        }
+
+        .payment-method-options label:not(.disabled):hover {
+            background-color: #404040;
+        }
+
+        .form-group .icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        .form-group .icon-text {
+            vertical-align: middle;
+        }
+
+        .conditional-fields {
+            background-color: #2a2a2a;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        .info-text {
+            font-size: 0.9em;
+            color: #aaa;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #282828;
+            border-radius: 4px;
+            border-left: 3px solid var(--primary-color);
+        }
+        .maintenance-info {
+            background-color: #4a3b00;
+            color: var(--primary-color);
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            border: 1px solid var(--primary-color);
+        }
+
+        .quick-amount {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .quick-amount button {
+            background-color: #444;
+            color: var(--text-color);
+            border: 1px solid #555;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s, border-color 0.3s;
+            flex-grow: 1;
+        }
+
+        .quick-amount button:hover {
+            background-color: #555;
+            border-color: var(--primary-color);
+        }
+        .quick-amount button.selected {
+            background-color: var(--primary-color);
+            color: #111;
+            font-weight: bold;
+            border-color: var(--primary-color);
+        }
+
+        .submit-button {
+            background-color: var(--primary-color);
+            color: #111;
+            padding: 15px;
+            border: none;
+            border-radius: 6px;
+            width: 100%;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+        .submit-button:hover {
+            background-color: #e6b800;
+        }
+        .submit-button:disabled {
+            background-color: #555;
+            color: #888;
+            cursor: not-allowed;
+        }
+
+        #messageBox {
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+        #messageBox.success {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #messageBox.error {
+            background-color: #f44336;
+            color: white;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        ::placeholder {
+          color: #888;
+          opacity: 1;
+        }
+        :-ms-input-placeholder {
+          color: #888;
+        }
+        ::-ms-input-placeholder {
+          color: #888;
+        }
+        .download-qris-btn {
+            display: inline-block;
+            background-color: #555;
+            color: var(--text-color);
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9em;
+            margin-top: 10px;
+            border: 1px solid #666;
+            transition: background-color 0.2s;
+        }
+        .download-qris-btn:hover {
+            background-color: #666;
+        }
+        .download-qris-btn i {
+            margin-right: 5px;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(34, 34, 34, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            border-radius: 10px;
+            flex-direction: column;
+            text-align: center;
+        }
+        .loading-overlay.active {
+            display: flex;
+        }
+        .loading-spinner {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid var(--primary-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        .loading-overlay p {
+            color: var(--primary-color);
+            margin-top: 15px;
+            font-size: 0.95em;
+            font-weight: bold;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #proofPreviewContainer {
+            margin-top: 10px;
+            text-align: center;
+        }
+        #proofPreview {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            display: none;
+        }
+        #fileNameDisplay {
+            font-size: 0.85em;
+            color: #ccc;
+            margin-top: 5px;
+            word-break: break-all;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>💰 Formulir Deposit</h2>
+
+        <div class="maintenance-info">
+            <strong>PEMBERITAHUAN:</strong> Metode Transfer Bank dan E-Wallet sedang dalam pemeliharaan.
+            Silakan gunakan metode pembayaran QRIS.
+        </div>
+
+        <div id="messageBox"></div>
+
+        <form id="depositForm">
+            <div class="form-group">
+                <label>Pilih Metode Pembayaran:</label>
+                <div class="payment-method-options">
+                    <label class="disabled">
+                        <input type="radio" name="paymentMethod" value="bank" id="paymentBank" disabled>
+                        <span>🏦 Transfer Bank</span>
+                        <span class="maintenance-text">(Maintenance)</span>
+                    </label>
+                    <label class="disabled">
+                        <input type="radio" name="paymentMethod" value="ewallet" id="paymentEwallet" disabled>
+                        <span>📱 E-Wallet</span>
+                        <span class="maintenance-text">(Maintenance)</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="paymentMethod" value="qris" id="paymentQris" checked>
+                        <span><img src="https://i.ibb.co/bJ4NMgS/qris.png" alt="[Ikon QRIS]" class="icon" onerror="this.style.display='none'"> <span class="icon-text">QRIS</span></span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="qrisFields" class="form-group conditional-fields">
+                <label>Scan QR Code Berikut:</label>
+                <div style="text-align: center; margin-bottom: 10px;">
+                    <img id="qrisImage" src="https://placehold.co/200x200/333333/FFCC00?text=QRIS+BLACKLIST" alt="[Kode QRIS]" style="max-width: 200px; border-radius: 8px; border: 2px solid #ffcc00;">
+                </div>
+                <div style="text-align: center;">
+                     <a href="#" id="downloadQrisButton" class="download-qris-btn"><i class="fas fa-download"></i> Unduh QRIS</a>
+                </div>
+                <p class="info-text" style="margin-top: 15px;">Setelah melakukan pembayaran melalui QRIS, mohon isi nama pengirim dan unggah bukti transfer Anda.</p>
+                
+                <label for="senderNameQris">Nama Pengirim (Sesuai Bukti Transfer):</label>
+                <input type="text" id="senderNameQris" name="senderNameQris" placeholder="Contoh: Budi S." required>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="proofOfTransfer">Unggah Bukti Transfer (Gambar):</label>
+                    <input type="file" id="proofOfTransfer" name="proofOfTransfer" accept="image/png, image/jpeg, image/jpg" required>
+                    <div id="proofPreviewContainer">
+                        <img id="proofPreview" src="#" alt="[Pratinjau Bukti Transfer]">
+                        <p id="fileNameDisplay"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="depositAmount">Jumlah Deposit (IDR):</label>
+                <input type="number" id="depositAmount" name="depositAmount" placeholder="Min. 50.000" min="50000" required>
+                <div class="quick-amount">
+                    <button type="button" data-amount="50000">50K</button>
+                    <button type="button" data-amount="100000">100K</button>
+                    <button type="button" data-amount="200000">200K</button>
+                    <button type="button" data-amount="500000">500K</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="promoCode">Kode Promo (Opsional):</label>
+                <input type="text" id="promoCode" name="promoCode" placeholder="Masukkan kode promo jika ada">
+            </div>
+
+            <button type="submit" class="submit-button" id="submitDepositBtn">Proses Deposit Sekarang</button>
+        </form>
+
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner"></div>
+            <p id="loadingMessage">Memproses deposit Anda... Mohon tunggu.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const qrisFields = document.getElementById('qrisFields');
+            const paymentQrisRadio = document.getElementById('paymentQris');
+            const depositAmountInput = document.getElementById('depositAmount');
+            const quickAmountButtons = document.querySelectorAll('.quick-amount button');
+            const depositForm = document.getElementById('depositForm');
+            const messageBox = document.getElementById('messageBox');
+            const qrisImage = document.getElementById('qrisImage');
+            const downloadQrisButton = document.getElementById('downloadQrisButton');
+            const submitDepositBtn = document.getElementById('submitDepositBtn');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const loadingMessageElement = document.getElementById('loadingMessage');
+            
+            const proofOfTransferInput = document.getElementById('proofOfTransfer');
+            const proofPreview = document.getElementById('proofPreview');
+            const fileNameDisplay = document.getElementById('fileNameDisplay');
+
+            let countdownIntervalId = null;
+
+            function updateConditionalFields() {
+                qrisFields.style.display = 'block';
+                document.getElementById('senderNameQris').required = true;
+                document.getElementById('depositAmount').required = true;
+                proofOfTransferInput.required = true;
+            }
+
+            if (paymentQrisRadio) paymentQrisRadio.checked = true;
+            
+            quickAmountButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const amount = this.dataset.amount;
+                    depositAmountInput.value = amount;
+                    quickAmountButtons.forEach(btn => btn.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+            
+            depositAmountInput.addEventListener('input', function() {
+                quickAmountButtons.forEach(btn => btn.classList.remove('selected'));
+                const currentAmount = this.value;
+                quickAmountButtons.forEach(btn => {
+                    if (btn.dataset.amount === currentAmount) {
+                        btn.classList.add('selected');
+                    }
+                });
+            });
+
+            if (downloadQrisButton && qrisImage) {
+                downloadQrisButton.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const imageUrl = qrisImage.src;
+                    const imageName = "QRIS_BLACKLIST_DEPOSIT.png";
+                    const link = document.createElement('a');
+                    link.href = imageUrl;
+                    link.download = imageName;
+                    link.target = '_blank'; 
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    showMessage('Mencoba mengunduh gambar QRIS...', 'success');
+                });
+            }
+
+            if (proofOfTransferInput && proofPreview && fileNameDisplay) {
+                proofOfTransferInput.addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            proofPreview.src = e.target.result;
+                            proofPreview.style.display = 'block';
+                        }
+                        reader.readAsDataURL(file);
+                        fileNameDisplay.textContent = `File: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+                    } else {
+                        proofPreview.style.display = 'none';
+                        proofPreview.src = '#';
+                        fileNameDisplay.textContent = '';
+                    }
+                });
+            }
+
+            depositForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                messageBox.style.display = 'none';
+                submitDepositBtn.disabled = true;
+                loadingOverlay.classList.add('active');
+
+                let isValid = true;
+                let missingFields = [];
+
+                if (!document.getElementById('senderNameQris').value) {
+                    missingFields.push("Nama Pengirim (QRIS)");
+                }
+                const amountToDeposit = parseFloat(depositAmountInput.value);
+                if (!amountToDeposit || amountToDeposit < 50000) {
+                    missingFields.push("Jumlah Deposit (Min. 50.000)");
+                }
+                if (!proofOfTransferInput.files || proofOfTransferInput.files.length === 0) {
+                    missingFields.push("Bukti Transfer");
+                }
+                
+                if (missingFields.length > 0) {
+                    isValid = false;
+                    showMessage(`Harap isi kolom berikut: ${missingFields.join(', ')}`, 'error');
+                    submitDepositBtn.disabled = false;
+                    loadingOverlay.classList.remove('active');
+                    return;
+                }
+
+                if (isValid) {
+                    let countdown = Math.floor(Math.random() * 6) + 30;
+                    const redirectDelay = countdown * 1000;
+                    loadingMessageElement.textContent = `Memproses deposit Anda... Mohon tunggu ${countdown} detik.`;
+
+                    if (countdownIntervalId) clearInterval(countdownIntervalId);
+                    countdownIntervalId = setInterval(() => {
+                        countdown--;
+                        if (countdown > 0) {
+                            loadingMessageElement.textContent = `Memproses deposit Anda... Mohon tunggu ${countdown} detik.`;
+                        } else {
+                            loadingMessageElement.textContent = `Memproses deposit Anda... Mohon tunggu sebentar lagi.`;
+                            clearInterval(countdownIntervalId);
+                        }
+                    }, 1000);
+
+                    const proofFile = proofOfTransferInput.files[0];
+                    console.log('Form Data (QRIS):', {
+                        paymentMethod: 'qris',
+                        senderNameQris: document.getElementById('senderNameQris').value,
+                        amount: depositAmountInput.value,
+                        promoCode: document.getElementById('promoCode').value,
+                        proofFileName: proofFile ? proofFile.name : "Tidak ada bukti"
+                    });
+
+                    const saldoUpdateDelay = Math.floor(Math.random() * 60000) + 60000;
+                    console.log(`Pembaruan saldo dijadwalkan dalam ${saldoUpdateDelay / 1000} detik.`);
+                    
+                    // PERUBAHAN UTAMA DI SINI: Update user-specific data object
+                    setTimeout(() => {
+                        try {
+                            const loggedInUser = localStorage.getItem('loggedInUser');
+                            if (loggedInUser) {
+                                const userDataString = localStorage.getItem('userData_' + loggedInUser);
+                                if (userDataString) {
+                                    const userData = JSON.parse(userDataString);
+                                    userData.balance = (parseFloat(userData.balance) || 0) + amountToDeposit;
+                                    // Simpan juga nama file bukti transfer jika diperlukan
+                                    if (proofFile) {
+                                        userData.lastDepositProof = proofFile.name; 
+                                        // Anda bisa membuat array riwayat deposit jika lebih kompleks
+                                    }
+                                    localStorage.setItem('userData_' + loggedInUser, JSON.stringify(userData));
+                                    console.log(`SALDO BERHASIL DIPERBARUI UNTUK ${loggedInUser}:`, userData.balance);
+
+                                    if (window.parent && window.parent !== window) {
+                                        window.parent.postMessage({ type: 'balanceUpdatedInBackground', newBalance: userData.balance, user: loggedInUser }, '*');
+                                    }
+                                } else {
+                                    console.error('Data pengguna tidak ditemukan untuk update saldo.');
+                                }
+                            } else {
+                                console.error('Tidak ada pengguna yang login untuk update saldo.');
+                            }
+                        } catch (e) {
+                            console.error('Gagal menyimpan saldo ke localStorage (dalam timeout):', e);
+                        }
+                    }, saldoUpdateDelay);
+
+                    setTimeout(() => {
+                        clearInterval(countdownIntervalId);
+                        console.log('Mengarahkan ke duplikat.html setelah loading...');
+                        window.location.href = 'duplikat.html';
+                    }, redirectDelay);
+
+                } else {
+                     submitDepositBtn.disabled = false;
+                     loadingOverlay.classList.remove('active');
+                }
+            });
+
+            function showMessage(message, type) {
+                messageBox.textContent = message;
+                messageBox.className = '';
+                messageBox.classList.add(type);
+                messageBox.style.display = 'block';
+            }
+            updateConditionalFields();
+        });
+    </script>
+</body>
+</html>
+
